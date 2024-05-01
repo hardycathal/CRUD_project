@@ -7,6 +7,8 @@ public class main {
         Operations op = new Operations();
 
         op.select();
+        op.update();
+        op.select();
 
     }
 }

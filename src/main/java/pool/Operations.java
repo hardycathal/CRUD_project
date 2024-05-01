@@ -66,4 +66,21 @@ public class Operations implements CRUD{
 
 
     }
+
+    @Override
+    public void update() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Please enter the command to update the data:");
+        String updateSQL = sc.nextLine();
+
+        try (Connection connection = DatabaseUtils.getConnection();
+             Statement statement = connection.createStatement()) {
+            int rowsUpdated = statement.executeUpdate(updateSQL);
+            System.out.println("Rows updated: " + rowsUpdated);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
