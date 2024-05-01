@@ -91,7 +91,22 @@ public class Operations implements CRUD{
         try (Connection connection = DatabaseUtils.getConnection();
              Statement statement = connection.createStatement()) {
             int rowsDeleted = statement.executeUpdate(deleteSQL);
-            System.out.println("Rows updated: " + rowsDeleted);
+            System.out.println("Rows deleted: " + rowsDeleted);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void create() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Please enter the command to add the data:");
+        String createSQL = sc.nextLine();
+
+        try (Connection connection = DatabaseUtils.getConnection();
+             Statement statement = connection.createStatement()) {
+            int rowsCreated = statement.executeUpdate(createSQL);
+            System.out.println("Rows created: " + rowsCreated);
         } catch (SQLException e) {
             e.printStackTrace();
         }
