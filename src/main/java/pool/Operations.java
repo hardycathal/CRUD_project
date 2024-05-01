@@ -82,5 +82,20 @@ public class Operations implements CRUD{
         }
     }
 
+    @Override
+    public void delete() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Please enter the command to delete the data:");
+        String deleteSQL = sc.nextLine();
+
+        try (Connection connection = DatabaseUtils.getConnection();
+             Statement statement = connection.createStatement()) {
+            int rowsDeleted = statement.executeUpdate(deleteSQL);
+            System.out.println("Rows updated: " + rowsDeleted);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

@@ -8,6 +8,7 @@ public class main {
 
         op.select();
         op.update();
+        op.delete();
         op.select();
 
     }
