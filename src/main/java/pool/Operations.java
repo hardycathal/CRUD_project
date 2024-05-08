@@ -1,9 +1,6 @@
 package pool;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -112,5 +109,96 @@ public class Operations implements CRUD{
         }
     }
 
+    public int signIn(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Please enter the email and password:");
+        String email = sc.nextLine();
+        String password = sc.nextLine();
+        int userId = -1;
 
+        String signInSQL = "SELECT id FROM members WHERE email = ? AND password = ?";
+
+        try (Connection connection = DatabaseUtils.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(signInSQL)) {
+
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, password);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    userId = resultSet.getInt("id");
+                    System.out.println("Signed in Successfully");
+                } else {
+                    System.out.println("Invalid email or password");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Sign in Failed");
+        }
+
+        return userId;
+    }
+
+    public void signUp() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Please enter your forename, surname, email, and password:");
+        String forename = sc.nextLine();
+        String surname = sc.nextLine();
+        String email = sc.nextLine();
+        String password = sc.nextLine();
+
+        String signUpSQL = "INSERT INTO members (forename, surname, email, password) VALUES (?, ?, ?, ?)";
+
+        try (Connection connection = DatabaseUtils.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(signUpSQL)) {
+
+            preparedStatement.setString(1, forename);
+            preparedStatement.setString(2, surname);
+            preparedStatement.setString(3, email);
+            preparedStatement.setString(4, password);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Sign up Successful");
+                System.out.println("Rerun and Sign in");
+            } else {
+                System.out.println("Sign up Failed");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Sign up Failed");
+
+        }
+
+    }
+
+    public void viewBooks(){
+        String selectSQL = "SELECT b.id, b.title, b.year, b.price, a.author, g.genre " +
+                "FROM books b " +
+                "JOIN author a ON b.id = a.id " +
+                "JOIN genre g ON b.id = g.id";
+
+        try (Connection connection = DatabaseUtils.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(selectSQL)) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String title = resultSet.getString("title");
+                String year = resultSet.getString("year");
+                String author = resultSet.getString("author");
+                String genre = resultSet.getString("genre");
+                String price = resultSet.getString("price");
+
+                System.out.println(id + ": " + "Title: " + title + ", Year: " + year + ", Author: " + author + ", Genre: " + genre + ", Price: " + price);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }
